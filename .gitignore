@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+
+# Environment
+.env
+backend/.env
+
+# Data (large files)
+data/raw/*.csv
+data/raw/*.pkl
+data/raw/*:Zone.Identifier
+
+# Docker
+db/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

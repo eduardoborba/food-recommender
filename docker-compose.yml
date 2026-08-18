@@ -1,0 +1,15 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: food_recommender
+      POSTGRES_USER: food
+      POSTGRES_PASSWORD: food
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+
+volumes:
+  pgdata:
