@@ -108,7 +108,8 @@ def import_to_database(conn, recipes: list[tuple], ingredient_map: dict[str, set
     print(f"Inserting {len(recipes)} recipes...")
     t0 = time.time()
     insert_recipes = """
-        INSERT INTO recipes (id, name, minutes, contributor_id, submitted, tags, nutrition, steps, description)
+        INSERT INTO recipes (id, name, minutes, contributor_id,
+                             submitted, tags, nutrition, steps, description)
         VALUES %s
         ON CONFLICT (id) DO NOTHING
     """
@@ -158,8 +159,14 @@ def import_to_database(conn, recipes: list[tuple], ingredient_map: dict[str, set
 
 def main():
     parser = argparse.ArgumentParser(description="Import Food.com dataset")
-    parser.add_argument("--csv-dir", type=Path, required=True, help="Directory containing RAW_recipes.csv")
-    parser.add_argument("--db-url", type=str, default="postgresql://food:food@localhost:5433/food_recommender")
+    parser.add_argument(
+        "--csv-dir", type=Path, required=True,
+        help="Directory containing RAW_recipes.csv",
+    )
+    parser.add_argument(
+        "--db-url", type=str,
+        default="postgresql://food:food@localhost:5433/food_recommender",
+    )
     args = parser.parse_args()
 
     csv_dir = args.csv_dir
@@ -178,7 +185,7 @@ def main():
     ingredient_map = load_ingredients_from_recipes(recipes_csv)
     print(f"  -> {len(ingredient_map)} unique ingredients found")
 
-    print(f"Connecting to database...")
+    print("Connecting to database...")
     conn = psycopg2.connect(args.db_url)
 
     try:

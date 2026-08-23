@@ -1,7 +1,7 @@
 """Recipe search and detail endpoints."""
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import func, or_
+from sqlalchemy import and_, func, or_, text
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
@@ -84,7 +84,8 @@ def list_tags(limit: int = Query(50, ge=1, le=200), db: Session = Depends(get_db
 @router.get("/stats")
 def stats(db: Session = Depends(get_db)):
     """Database statistics."""
+    has_image = and_(Recipe.image_url.isnot(None), Recipe.image_url != "")
     return {
         "recipes": db.query(func.count(Recipe.id)).scalar(),
-        "recipes_with_image": db.query(func.count(Recipe.id)).filter(Recipe.image_url.isnot(None)).scalar(),
+        "recipes_with_image": db.query(func.count(Recipe.id)).filter(has_image).scalar(),
     }
