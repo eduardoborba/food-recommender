@@ -1,6 +1,6 @@
 """Pydantic schemas for API request/response."""
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class RecipeSummary(BaseModel):
@@ -9,6 +9,12 @@ class RecipeSummary(BaseModel):
     minutes: int | None
     tags: list[str] | None
     image_url: str | None
+
+    @field_validator("image_url", mode="after")
+    @classmethod
+    def empty_image_is_none(cls, v: str | None) -> str | None:
+        """Enrichment marks checked-but-imageless recipes with ''."""
+        return v or None
 
     model_config = {"from_attributes": True}
 
